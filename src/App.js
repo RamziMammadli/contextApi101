@@ -1,18 +1,39 @@
-import React, { useState } from 'react'
-import Header from './components/Header'
-import Middle from './components/Middle'
+import React, { useEffect, useState } from "react";
+import Header from "./components/Header";
+import Middle from "./components/Middle";
+import { MainContext } from "./context/context";
+import axios from "axios";
 
 const App = () => {
+  const [name, setName] = useState("Ramzi");
+  const [surname, setSurname] = useState("Mammadli");
+  const [db, setDb] = useState([]);
+  const [ab, setAb] = useState("Sitare");
 
-  const [ data, setData ] = useState('')
-  const [ name, setName ] = useState([])
+  useEffect(() => {
+    axios
+      .get("https://northwind.vercel.app/api/suppliers/")
+      .then((response) => {
+        setDb(response.data);
+      });
+  }, []);
+
+  const data = {
+    name,
+    surname,
+    db,
+    ab,
+    setAb
+  };
 
   return (
     <div>
-      <Header data={data} setData={setData} name={name} setName={setName} />
-      <Middle/>
+      <MainContext.Provider value={data}>
+        <Header />
+        <Middle />
+      </MainContext.Provider>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
